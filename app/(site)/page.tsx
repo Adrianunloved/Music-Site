@@ -1,8 +1,14 @@
 import Header from "@/Components/Header";
 import ListItem from "@/Components/ListItem";
+import getSongs from "@/actions/getSongs";
+import PageContent from "./components/PageContent";
+
+export const revalidate = 0;
 
 // important to put in parenthesis so that it doesn't change route of app
-export default function Home() { 
+export default async function Home() { 
+  const songs = await getSongs();
+
   return (
     <div className="
       bg-neutral-900
@@ -50,7 +56,7 @@ export default function Home() {
           </h1>
         </div>
         <div>
-          List of Songs!
+          <PageContent songs={songs}/>
         </div>
       </div>
     </div>
