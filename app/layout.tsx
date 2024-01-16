@@ -1,40 +1,42 @@
-import type { Metadata } from 'next'
-import { Figtree } from 'next/font/google' // Change font
-import './globals.css'
+import { Figtree } from 'next/font/google'
 
+import getSongsByUserId from '@/actions/getSongsByUserID'
+import getActiveProductsWithPrices from '@/actions/getActiveProductsWithPrices'
 import Sidebar from '@/Components/Sidebar'
-import SupabaseProvider from '@/providers/SupabaseProvider'
-import UserProvider from '@/providers/UserProvider'
-import ModalProvider from '@/providers/ModelProvider'
 import ToasterProvider from '@/providers/ToasterProvider'
-import getSongsByUserID from '@/actions/getSongsByUserID'
+import UserProvider from '@/providers/UserProvider'
+import ModalProvider from '@/providers/ModalProvider'
+import SupabaseProvider from '@/providers/SupabaseProvider'
 import Player from '@/Components/Player'
+
+import './globals.css'
 
 const font = Figtree({ subsets: ['latin'] })
 
-export const metadata: Metadata = {
-  title: 'Music Site', // Site name
-  description: 'Listen and talk about music!',
+export const metadata = {
+  title: 'Music-site Player',
+  description: 'Learn more about your favorite songs',
 }
 
-export const revalidate = 0; // Dont want player to be cached
+export const revalidate = 0;
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const userSongs = await getSongsByUserID();
-  
+  const products = await getActiveProductsWithPrices();
+  const userSongs = await getSongsByUserId();
+
   return (
     <html lang="en">
       <body className={font.className}>
         <ToasterProvider />
         <SupabaseProvider>
           <UserProvider>
-            <ModalProvider />
+            <ModalProvider products={products} />
             <Sidebar songs={userSongs}>
-              {children}  
+              {children}
             </Sidebar>
             <Player />
           </UserProvider>
